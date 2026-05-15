@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily News UI</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-alt: #eef2f7;
+      --text: #131a2a;
+      --text-muted: #556075;
+      --border: rgba(20, 33, 63, 0.08);
+      --accent: #4b7cff;
+      --shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+    }
+
+    .dark {
+      --bg: #121619;
+      --surface: #1f252d;
+      --surface-alt: #262d36;
+      --text: #f7f7fb;
+      --text-muted: #a5b1c8;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #70a7ff;
+      --shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .app-shell {
+      width: min(520px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .top-card {
+      padding: 26px 22px;
+      background: var(--surface);
+      border-radius: 32px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .headline {
+      margin: 0;
+      font-size: 1.75rem;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-button {
+      border: none;
+      border-radius: 16px;
+      background: var(--surface-alt);
+      color: var(--text);
+      width: 46px;
+      height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .icon-button:hover {
+      transform: translateY(-1px);
+      background: rgba(75, 124, 255, 0.12);
+    }
+
+    .section-label {
+      margin: 24px 0 12px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .card-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .news-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 18px;
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .news-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+
+    .news-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .news-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .news-summary {
+      margin: 0;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .tag-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(75, 124, 255, 0.12);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--surface-alt);
+      padding: 10px 14px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .toggle-label span {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .toggle-switch {
+      width: 42px;
+      height: 22px;
+      border-radius: 999px;
+      position: relative;
+      background: rgba(75, 124, 255, 0.24);
+    }
+
+    .toggle-switch::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+      transition: transform 0.25s ease;
+    }
+
+    .toggle-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-input:checked + .toggle-switch::after {
+      transform: translateX(20px);
+    }
+
+    .hero-text {
+      margin-top: 18px;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 520px) {
+      .news-card {
+        grid-template-columns: 1fr;
+      }
+
+      .news-card img {
+        min-height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" id="app">
+    <section class="top-card">
+      <div class="header-row">
+        <div>
+          <h1 class="headline">Daily News</h1>
+          <p class="hero-text">Stay informed with curated stories, trending updates, and smart reading suggestions.</p>
+        </div>
+        <div class="controls">
+          <button class="icon-button" aria-label="Search">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+          </button>
+          <label class="toggle-label">
+            <input type="checkbox" class="toggle-input" id="theme-toggle">
+            <span>Dark</span>
+            <span class="toggle-switch"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <p class="section-label">Top stories</p>
+    <div class="card-list">
+      <article class="news-card">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=500&q=80" alt="City skyline at dawn">
+        <div class="news-info">
+          <div>
+            <h2 class="news-title">City redesigns public transit for a greener future</h2>
+            <p class="news-summary">The latest urban plan includes new bike lanes, rapid bus corridors, and solar-powered stops to improve daily commutes.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag-pill">Urban Planning</span>
+            <span>5 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=500&q=80" alt="Person reading news on a mobile device">
+        <div class="news-info">
+          <div>
+            <h2 class="news-title">Technology trends pushing mobile storytelling forward</h2>
+            <p class="news-summary">Immersive formats, smart notifications, and personalized feeds keep readers engaged throughout the day.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag-pill">Tech</span>
+            <span>3 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7?auto=format&fit=crop&w=500&q=80" alt="Fresh salad bowl and journal">
+        <div class="news-info">
+          <div>
+            <h2 class="news-title">Healthy habits: how morning rituals shape your week</h2>
+            <p class="news-summary">Experts share simple routines that reduce stress, boost energy, and keep your productivity steady.</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag-pill">Lifestyle</span>
+            <span>4 min read</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const app = document.getElementById('app');
+
+    function updateTheme() {
+      document.documentElement.classList.toggle('dark', toggle.checked);
+    }
+
+    toggle.addEventListener('change', updateTheme);
+    updateTheme();
+  </script>
+</body>
+</html>
